@@ -1,4 +1,4 @@
-#!D:\faulttrackingsystem\wvenv\Scripts\python.exe
+#!D:\fault-tracking-system\wvenv\Scripts\python.exe
 from django.core import management
 
 if __name__ == "__main__":
