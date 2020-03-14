@@ -1,0 +1,36 @@
+{% extends "admin/layout/login-layout.html" %}
+{% block title %}Grup Ekle{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block body %}
+    <div class="login-box">
+        <div class="login-logo"><b>Water Works Trouble Ticket Manage System</b>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Giriş Yap</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form_as.p }}
+                    <div class="mb-3">
+                        {{ form.username|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.password|as_crispy_field }}
+                    </div>
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Giriş</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+{% endblock %}

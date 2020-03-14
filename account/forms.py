@@ -6,12 +6,16 @@ from account.models import Account
 class AccountRegisterForm(forms.Form):
     username = forms.CharField(min_length=3, max_length=50, label="Kullanıcı Adı")
     email = forms.EmailField(label="Email Adresi")
+    first_name = forms.CharField(label="Ad")
+    last_name = forms.CharField(label="Soyad")
     password = forms.CharField(min_length=6, max_length=50, label="Şifre", widget=forms.PasswordInput)
     confirm_password = forms.CharField(min_length=6, max_length=50, label="Şifre Tekrar", widget=forms.PasswordInput)
 
     def clean(self):
         username = self.cleaned_data.get("username")
         email = self.cleaned_data.get("email")
+        first_name = self.cleaned_data.get("first_name")
+        last_name = self.cleaned_data.get("last_name")
         password = self.cleaned_data.get("password")
         confirm_password = self.cleaned_data.get("confirm_password")
 
@@ -21,6 +25,8 @@ class AccountRegisterForm(forms.Form):
         values = {
             "username": username,
             "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
             "password": password,
         }
         return values
@@ -40,15 +46,3 @@ class AccountLoginForm(forms.Form):
         }
         return values
 
-
-class EditProfileForm(forms.ModelForm):
-    class Meta:
-        model = Account
-        fields = ["username", "first_name", "last_name", "email", "image"]
-        help_texts = {
-            'username': None,
-            'first_name': None,
-            'last_name': None,
-            'email': None,
-            'description': None
-        }

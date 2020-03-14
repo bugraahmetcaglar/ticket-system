@@ -1,0 +1,86 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'admin_index' %}" class="brand-link">
+        <span class="brand-text font-weight-light">WWTTMS</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="info">
+                <a href="#" class="d-block">{{ request.user.username }}</a>
+            </div>
+        </div>
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Gruplar</li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-circle nav-icon"></i>
+                        <p>Anasayfa</p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="" class="nav-link">
+                        <i class="nav-icon fas fa-circle"></i>
+                        <p>
+                            Kullanıcı
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_users' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kullanıcılar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin_account_groups' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kullanıcı Grupları</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin_add_account_group' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kullanıcıya Grup Ekle</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin_add_account' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Yeni Kullanıcı</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="" class="nav-link">
+                        <i class="nav-icon fas fa-circle"></i>
+                        <p>
+                            Grup
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'groups_index' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gruplar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'add_group' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Grup Ekle</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!-- /.sidebar -->
+</aside>
