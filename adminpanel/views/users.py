@@ -15,7 +15,7 @@ def admin_add_account_group(request):
     :return:
     """
     form = AdminAccountGroupForm(request.POST or None)
-    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="admin")
+    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="chief")
     context = {"form": form, "adminGroup": adminGroup}
     if adminGroup:
         if form.is_valid():
@@ -58,7 +58,7 @@ def admin_add_account(request):
     form = AccountRegisterForm(request.POST or None)
     getGroup = Group.objects.get(slug="uye")
     accountGroup = AccountGroup()
-    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="admin")
+    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="chief")
     if adminGroup:
         if form.is_valid():
             username = form.cleaned_data.get("username")

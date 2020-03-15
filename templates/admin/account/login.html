@@ -6,6 +6,13 @@
     <div class="login-box">
         <div class="login-logo"><b>Water Works Trouble Ticket Manage System</b>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                </div>
+            </div>
+        </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
@@ -15,7 +22,7 @@
                     {% csrf_token %}
                     {{ form_as.p }}
                     <div class="mb-3">
-                        {{ form.username|as_crispy_field }}
+                        {{ form.email|as_crispy_field }}
                     </div>
                     <div class="mb-3">
                         {{ form.password|as_crispy_field }}
@@ -26,6 +33,15 @@
                             <button type="submit" class="btn btn-primary btn-block">Giriş</button>
                         </div>
                         <!-- /.col -->
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Hesabınız yok mu?
+                                <a href="{% url 'register_account' %}">
+                                    Buradan kayıt olabilirsiniz.
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </form>
 

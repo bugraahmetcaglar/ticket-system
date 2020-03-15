@@ -8,6 +8,8 @@ class AccountRegisterForm(forms.Form):
     email = forms.EmailField(label="Email Adresi")
     first_name = forms.CharField(label="Ad")
     last_name = forms.CharField(label="Soyad")
+    address = forms.CharField(label="Adres")
+    phoneNumber = forms.CharField(label="Telefon Numarası")
     password = forms.CharField(min_length=6, max_length=50, label="Şifre", widget=forms.PasswordInput)
     confirm_password = forms.CharField(min_length=6, max_length=50, label="Şifre Tekrar", widget=forms.PasswordInput)
 
@@ -16,6 +18,8 @@ class AccountRegisterForm(forms.Form):
         email = self.cleaned_data.get("email")
         first_name = self.cleaned_data.get("first_name")
         last_name = self.cleaned_data.get("last_name")
+        address = self.cleaned_data.get("address")
+        phoneNumber = self.cleaned_data.get("phoneNumber")
         password = self.cleaned_data.get("password")
         confirm_password = self.cleaned_data.get("confirm_password")
 
@@ -27,21 +31,23 @@ class AccountRegisterForm(forms.Form):
             "email": email,
             "first_name": first_name,
             "last_name": last_name,
+            "address": address,
             "password": password,
+            "phoneNumber": phoneNumber,
         }
         return values
 
 
 class AccountLoginForm(forms.Form):
-    username = forms.CharField(label="Kullanıcı Adı")
+    email = forms.EmailField(label="Email")
     password = forms.CharField(label="Şifre", widget=forms.PasswordInput())
 
     def clean(self):
-        username = self.cleaned_data.get("username")
+        email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
 
         values = {
-            "username": username,
+            "email": email,
             "password": password
         }
         return values

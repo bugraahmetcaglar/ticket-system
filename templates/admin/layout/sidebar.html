@@ -14,18 +14,18 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-header">Gruplar</li>
+                <li class="nav-header">Groups</li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fas fa-circle nav-icon"></i>
-                        <p>Anasayfa</p>
+                        <p>Index</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="" class="nav-link">
                         <i class="nav-icon fas fa-circle"></i>
                         <p>
-                            Kullanıcı
+                            User
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -33,25 +33,25 @@
                         <li class="nav-item">
                             <a href="{% url 'admin_users' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Kullanıcılar</p>
+                                <p>Users</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'admin_account_groups' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Kullanıcı Grupları</p>
+                                <p>Customers' Groups</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'admin_add_account_group' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Kullanıcıya Grup Ekle</p>
+                                <p>Add User Group</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'admin_add_account' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Yeni Kullanıcı</p>
+                                <p>Add User</p>
                             </a>
                         </li>
                     </ul>
@@ -60,7 +60,7 @@
                     <a href="" class="nav-link">
                         <i class="nav-icon fas fa-circle"></i>
                         <p>
-                            Grup
+                            Group
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -68,13 +68,44 @@
                         <li class="nav-item">
                             <a href="{% url 'groups_index' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Gruplar</p>
+                                <p>Groups</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'add_group' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Grup Ekle</p>
+                                <p>Add Group</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="" class="nav-link">
+                        <i class="nav-icon fas fa-circle"></i>
+                        <p>
+                            Ticket
+                            <i class="right fas fa-angle-left"></i>
+                            <span class="badge badge-info right">{{ unreadCount }}</span>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'all_tickets' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tickets</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'unread_tickets' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Unread Tickets</p>
+                                <span class="badge badge-info right">{{ unreadCount }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'add_group' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Group</p>
                             </a>
                         </li>
                     </ul>

@@ -3,15 +3,15 @@ from account.models import Permission, Group, GroupPermission, AccountGroup, Acc
 
 
 class AdminLoginForm(forms.Form):
-    username = forms.CharField(label="Kullanıcı Adı")
+    email = forms.EmailField(label="Email Adresi")
     password = forms.CharField(label="Şifre", widget=forms.PasswordInput())
 
     def clean(self):
-        username = self.cleaned_data.get("username")
+        email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
 
         values = {
-            "username": username,
+            "email": email,
             "password": password
         }
         return values

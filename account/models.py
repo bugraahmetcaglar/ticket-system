@@ -41,9 +41,12 @@ class Group(models.Model):
 class Account(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     updatedDate = models.DateTimeField(verbose_name="Son Güncelleme", null=True, blank=True)
+    address = models.CharField(verbose_name="Adres", max_length=254)
+    phoneNumber = models.CharField(verbose_name="Telefon Numarası", null=True, blank=True, max_length=13)
+    email = models.EmailField(verbose_name="Email", unique=True, max_length=254)
 
     def __str__(self):
-        return self.username
+        return self.email
 
     class Meta:
         db_table = "Account"

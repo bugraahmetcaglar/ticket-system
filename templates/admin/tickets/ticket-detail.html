@@ -1,0 +1,133 @@
+{% extends "admin/layout/layout.html" %}
+{% block title %}Blank Page{% endblock %}
+{% load static %}
+{% block body %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{ instance.ticketNumber }} - Detail</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Blank Page</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ instance.ticketNumber }} - Detail</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
+                                title="Collapse">
+                            <i class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
+                            <div class="row">
+                                <div class="col-12 col-sm-4">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted"><a
+                                                    href="mailto: {{ instance.email }}">Send Email</a></span>
+                                            <span class="info-box-number text-center text-muted mb-0">Email: {{ instance.email }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">Owner Full Name</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ instance.first_name }} {{ instance.last_name }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <div class="info-box bg-light">
+                                        <div class="info-box-content">
+                                            <span class="info-box-text text-center text-muted">Created Date</span>
+                                            <span class="info-box-number text-center text-muted mb-0">{{ instance.createdDate }}<span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 mt-5">
+                                    <h4>Recent Messages</h4>
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <a href="#">{{ instance.first_name }} {{ instance.last_name }}</a>
+                                            <p>Sent you a message - {{ instance.createdDate }}</p>
+                                        </div>
+                                        <!-- /.user-block -->
+                                        <p>
+                                            {{ instance.message|safe }}
+                                        </p>
+                                    </div>
+                                    {% for reply in ticketReply %}
+                                        <div class="post clearfix">
+                                            <div class="user-block">
+                                                <p style="color: #222222; font-size: 1.3em">Me :</p>
+                                                <p>{{ instance.createdDate }}</p>
+                                            </div>
+                                            <!-- /.user-block -->
+                                            <p>
+                                                {{ reply.content|safe }}
+                                            </p>
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12 order-2">
+                            <form method="post" id="commentform" class="comment-form"
+                                  action="{% url 'add_reply' instance.ticketNumber %}">
+                                {% csrf_token %}
+                                <p class="comment-form-comment form-group has-placeholder">
+                                    <label for="comment">Reply</label>
+                                    <i class="fa fa-edit color-main"></i>
+                                    <textarea class="form-control" id="comment" name="content"
+                                              cols="45"
+                                              rows="8" maxlength="65525" aria-required="true"
+                                              required="required" placeholder=""></textarea>
+                                </p>
+                                <p class="form-submit">
+                                    <button type="submit" class="btn btn-primary">
+                                        <span>Send</span>
+                                    </button>
+                                    <button class="btn btn-danger">
+                                        <a href="#" style="color: #fff">Close Case</a>
+                                    </button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    {% include 'admin/layout/footer.html' %}
+{% endblock %}
