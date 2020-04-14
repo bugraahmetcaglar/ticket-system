@@ -5,10 +5,10 @@ from django.shortcuts import redirect, render
 
 from account.forms import AccountRegisterForm
 from account.models import AccountGroup, Account, Group
+from account.views import current_user_group
 from adminpanel.forms import AdminAccountGroupForm
 
 
-@login_required(login_url="login_admin")
 def admin_add_account_group(request):
     """
     :param request:
@@ -21,13 +21,12 @@ def admin_add_account_group(request):
         if form.is_valid():
             userId = form.cleaned_data.get("userId")
             groupId = form.cleaned_data.get("groupId")
-            isActive = form.cleaned_data.get("isActive")
             if AccountGroup.objects.filter(Q(groupId=groupId) and Q(userId=userId)):
-                messages.error(request, 'Bu kullanıcıya izin daha önce eklenmiş.')
+                messages.error(request, 'This user has already have a group.')
             else:
-                instance = AccountGroup(userId=userId, groupId=groupId, isActive=isActive)
+                instance = AccountGroup(userId=userId, groupId=groupId)
                 instance.save()
-                messages.success(request, "Kullanıcıya başarıyla grup eklendi.")
+                messages.success(request, "Group was added to user successfully.")
                 return redirect("admin_add_account_group")
         return render(request, "admin/account/add-account-group.html", context)
     else:
@@ -37,18 +36,24 @@ def admin_add_account_group(request):
 
 @login_required(login_url="login_admin")
 def admin_users(request):
+    currentUser = request.user
+    accountGroup = current_user_group(request, currentUser)
     users = Account.objects.all()
     context = {
         "users": users,
+        "accountGroup": accountGroup,
     }
     return render(request, "admin/account/account.html", context)
 
 
 @login_required(login_url="login_admin")
 def admin_account_groups(request):
-    accountGroups = AccountGroup.objects.all()
+    currentUser = request.user
+    accountGroup = current_user_group(request, currentUser)
+    groups = AccountGroup.objects.all()
     context = {
-        "accountGroups": accountGroups,
+        "groups": groups,
+        "accountGroup": accountGroup,
     }
     return render(request, "admin/account/account-group.html", context)
 
@@ -56,8 +61,10 @@ def admin_account_groups(request):
 @login_required(login_url="login_admin")
 def admin_add_account(request):
     form = AccountRegisterForm(request.POST or None)
-    getGroup = Group.objects.get(slug="uye")
-    accountGroup = AccountGroup()
+    currentUser = request.user
+    accountGroup = current_user_group(request, currentUser)
+    getGroup = Group.objects.get(slug="user")
+    group = AccountGroup()
     adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="chief")
     if adminGroup:
         if form.is_valid():
@@ -70,16 +77,40 @@ def admin_add_account(request):
             new_user.save()
             new_user.set_password(password)
             new_user.save()
-            accountGroup.userId_id = new_user.id
-            accountGroup.groupId_id = getGroup.id
-            accountGroup.save()
-            messages.success(request, "Kayıt işlemi başarıyla gerçekleştirildi.")
+            group.userId_id = new_user.id
+            group.groupId_id = getGroup.id
+            group.save()
+            messages.success(request, "Registration successfully created.")
             return redirect("admin_users")
         context = {
             "form": form,
-            "adminGroup": adminGroup
+            "adminGroup": adminGroup,
+            "accountGroup": accountGroup
         }
         return render(request, "admin/account/new-user.html", context)
     else:
-        messages.error(request, "Yetkiniz Yok !")
+        messages.error(request, "You don't have permission")
         return redirect("admin_users")
+
+
+@login_required(login_url="login_admin")
+def block_account(request, username):
+    currentUser = request.user
+    accountGroup = current_user_group(request, currentUser)
+    try:
+        instance = Account.objects.get(username=username)
+        if accountGroup == 'admin':
+            if instance.is_active:
+                instance.is_active = False
+                instance.save()
+                return redirect("all_users")
+            else:
+                instance.is_active = True
+                instance.save()
+                return redirect("all_users")
+        else:
+            messages.error(request, "You don't have permission")
+            return redirect("all_users")
+    except:
+        messages.error(request, "User couldn't find")
+        return redirect("all_users")

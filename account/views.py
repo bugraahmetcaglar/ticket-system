@@ -1,16 +1,9 @@
-import datetime
-import random
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from rest_framework.generics import get_object_or_404
 
 from account.forms import AccountRegisterForm, AccountLoginForm
-from account.models import Account
-from track.forms import TicketForm
-from track.models import Ticket
+from account.models import Account, AccountGroup, Group
 
 
 def register_account(request):
@@ -32,16 +25,19 @@ def register_account(request):
             new_user.save()
             new_user.set_password(password)
             new_user.save()
+            getGroup = Group.objects.get(slug="user")
+            new_group = AccountGroup(userId=new_user, groupId=getGroup)
+            new_group.save()
             login_user = authenticate(username=username, password=password)
             login(request, login_user)
-            messages.success(request, "Başarıyla kayıt oluşturuldu.")
+            messages.success(request, "Registration successfully created.")
             return redirect("wwttms_index")
         context = {
             "form": form
         }
         return render(request, "wwttms/register.html", context)
     else:
-        messages.error(request, "Zaten giriş yapıldı.")
+        messages.error(request, "You already logged in.")
         return redirect("wwttms_index")
 
 
@@ -56,14 +52,14 @@ def login_account(request):
             if getUser:
                 user = authenticate(username=getUser.username, password=password)
             else:
-                messages.error(request, "Girdiğiniz mail adresinde kullanıcı bulunamadı")
+                messages.error(request, "User not found by given email")
                 return render(request, "wwttms/login.html", {"form": form})
             if user is None:
-                messages.error(request, "Böyle bir kullanıcı bulunamadı.")
+                messages.error(request, "User not found.")
                 return render(request, "wwttms/login.html", {"form": form})
             else:
                 login(request, user)
-                messages.success(request, "Başarıyla giriş yaptınız")
+                messages.success(request, "Logged in successful")
                 return redirect("wwttms_index")
         else:
             return render(request, "wwttms/login.html", context)
@@ -74,10 +70,17 @@ def login_account(request):
 def logout_account(request):
     if request.user.is_authenticated:
         logout(request)
-        messages.success(request, "Başarıyla çıkış yaptınız.")
+        messages.success(request, "Logout successful.")
         return redirect("login_account")
     else:
-        messages.error(request, "Önce giriş yapmalısınız")
+        messages.error(request, "You are not logged in")
         return redirect("login_account")
 
 
+def current_user_group(self, username):
+    try:
+        group = AccountGroup.objects.get(userId__username=username)
+        return str(group.groupId)
+    except:
+        group = None
+        return group

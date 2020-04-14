@@ -4,10 +4,10 @@ from django import forms
 
 
 class TicketForm(forms.Form):
-    first_name = forms.CharField(label="Ad")
-    last_name = forms.CharField(label="Soyad")
+    first_name = forms.CharField(label="First Name")
+    last_name = forms.CharField(label="Last Name")
     email = forms.EmailField(label="Email")
-    message = forms.CharField(widget=CKEditorWidget(), label="Yazı")
+    message = forms.CharField(widget=CKEditorWidget(), label="Message")
 
     def clean(self):
         first_name = self.cleaned_data.get("first_name")

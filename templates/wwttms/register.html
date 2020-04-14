@@ -1,33 +1,28 @@
 {% extends "wwttms/layout/login-layout.html" %}
-{% block title %}Kayıt Ol{% endblock %}
+{% block title %}Sign Up{% endblock %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block body %}
     <div class="login-box">
         <div class="login-logo"><b>Water Works Trouble Ticket Manage System</b>
         </div>
-        <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Kayıt Ol</p>
-
+                <p class="login-box-msg">Sign Up</p>
                 <form method="post">
                     {% csrf_token %}
                     {{ form_as.p }}
                     {{ form|crispy }}
-
                     <div class="row">
-                        <!-- /.col -->
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Kayıt</button>
+                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                         </div>
-                        <!-- /.col -->
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>Zaten üye misiniz?
+                            <p>Already have an account?
                                 <a href="{% url 'login_account' %}">
-                                    Buradan giriş yapabilirsiniz.
+                                    Login
                                 </a>
                             </p>
                         </div>
@@ -35,7 +30,6 @@
                 </form>
 
             </div>
-            <!-- /.login-card-body -->
         </div>
     </div>
 {% endblock %}

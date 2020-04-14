@@ -1,17 +1,15 @@
 from django import forms
 
-from account.models import Account
-
 
 class AccountRegisterForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=50, label="Kullanıcı Adı")
-    email = forms.EmailField(label="Email Adresi")
-    first_name = forms.CharField(label="Ad")
-    last_name = forms.CharField(label="Soyad")
-    address = forms.CharField(label="Adres")
-    phoneNumber = forms.CharField(label="Telefon Numarası")
-    password = forms.CharField(min_length=6, max_length=50, label="Şifre", widget=forms.PasswordInput)
-    confirm_password = forms.CharField(min_length=6, max_length=50, label="Şifre Tekrar", widget=forms.PasswordInput)
+    username = forms.CharField(min_length=3, max_length=50, label="Username")
+    email = forms.EmailField(label="Email")
+    first_name = forms.CharField(label="First Name")
+    last_name = forms.CharField(label="Last Name")
+    address = forms.CharField(label="Address")
+    phoneNumber = forms.CharField(label="Phone Number")
+    password = forms.CharField(min_length=6, max_length=50, label="Password", widget=forms.PasswordInput)
+    confirm_password = forms.CharField(min_length=6, max_length=50, label="Confirm Password", widget=forms.PasswordInput)
 
     def clean(self):
         username = self.cleaned_data.get("username")
@@ -24,7 +22,7 @@ class AccountRegisterForm(forms.Form):
         confirm_password = self.cleaned_data.get("confirm_password")
 
         if password and confirm_password and password != confirm_password:
-            raise forms.ValidationError("Girilen şifreler uyuşmuyor! Lütfen tekrar deneyin.")
+            raise forms.ValidationError("Passwords are not matched.")
 
         values = {
             "username": username,
@@ -40,7 +38,7 @@ class AccountRegisterForm(forms.Form):
 
 class AccountLoginForm(forms.Form):
     email = forms.EmailField(label="Email")
-    password = forms.CharField(label="Şifre", widget=forms.PasswordInput())
+    password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
     def clean(self):
         email = self.cleaned_data.get("email")

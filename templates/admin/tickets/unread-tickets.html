@@ -2,61 +2,43 @@
 {% block title %}Blank Page{% endblock %}
 {% load static %}
 {% block body %}
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Kullanıcı Grupları</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{% url 'admin_account_groups' %}">Kullanıcı Grupları</a></li>
-                            <li class="breadcrumb-item active">Liste</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- Main content -->
         <section class="content">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Gruplar</h3>
+                            <h3 class="card-title">Unread Tickets</h3>
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example2" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>Ticket Number</th>
-                                    <th>Email</th>
                                     <th>Full Name</th>
                                     <th>Creator Email</th>
                                     <th>Created Date</th>
                                     <th>Updated Date</th>
                                     <th>Is Active</th>
-                                    <th>İşlemler</th>
+                                    <th>Reply</th>
+                                    <th>Close Case</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% if unreadTickets %}
                                     {% for ticket in unreadTickets %}
                                         <tr>
-                                            <td><a href="{% url 'ticket_detail' ticket.ticketNumber %}">{{ ticket.ticketNumber }}</a></td>
-                                            <td>{{ ticket.email }}</td>
+                                            <td><a href="{% url 'admin_ticket_detail' ticket.ticketNumber %}">{{ ticket.ticketNumber }}</a></td>
                                             <td>{{ ticket.first_name }} {{ ticket.last_name }}</td>
                                             <td>{{ ticket.creator.email }}</td>
                                             <td>{{ ticket.createdDate }}</td>
                                             <td>{{ ticket.updatedDate }}</td>
-                                            <td>{% if ticket.isActive %}Aktif{% else %}Kapalı{% endif %}</td>
+                                            <td>{{ ticket.isActive }}</td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'delete_ticket' ticket.ticketNumber %}"><button class="btn btn-sm btn-danger">Sil</button></a>
-{#                                                <a style="color: #fff" href="{% url 'delete_group' group.slug %}"><button class="btn btn-sm btn-danger">Sil</button></a>#}
+                                                <a style="color: #fff" href="{% url 'admin_ticket_detail' ticket.ticketNumber %}" class="btn btn-sm btn-success">Reply</a>
+                                            </td>
+                                            <td>
+                                                <a style="color: #fff" href="{% url 'delete_ticket' ticket.ticketNumber %}"><button class="btn btn-sm btn-danger">Close Case</button></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -65,27 +47,21 @@
                                 <tfoot>
                                 <tr>
                                     <th>Ticket Number</th>
-                                    <th>Email</th>
                                     <th>Full Name</th>
                                     <th>Creator Email</th>
                                     <th>Created Date</th>
                                     <th>Updated Date</th>
                                     <th>Is Active</th>
-                                    <th>İşlemler</th>
+                                    <th>Reply</th>
+                                    <th>Close Case</th>
                                 </tr>
                                 </tfoot>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
     {% include 'admin/layout/footer.html' %}
 {% endblock %}

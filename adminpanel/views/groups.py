@@ -30,7 +30,7 @@ def add_group(request):
         isActive = form.cleaned_data.get("isActive")
         instance = Group(title=title, isActive=isActive)
         instance.save()
-        messages.success(request, "Grup başarıyla oluşturuldu")
+        messages.success(request, "Group successfully created")
         return redirect("groups_index")
     return render(request, "admin/groups/add-group.html", context)
 

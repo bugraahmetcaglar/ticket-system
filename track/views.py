@@ -14,6 +14,10 @@ from track.models import Ticket, TicketReply
 
 @login_required(login_url="login_account")
 def wwttms_index(request):
+    """
+    :param request:
+    :return:
+    """
     form = TicketForm(request.POST or None)
     if form.is_valid():
         first_name = form.cleaned_data.get("first_name")
@@ -44,14 +48,14 @@ def wwttms_index(request):
     return render(request, "wwttms/index.html", {"form": form})
 
 
-@login_required(login_url="login_admin")
+@login_required(login_url="login_account")
 def my_tickets(request):
     tickets = Ticket.objects.filter(creator=request.user)
     unreadCount = Ticket.objects.filter(isRead=False).count()
     return render(request, "wwttms/tickets/my-tickets.html", {"tickets": tickets, "unreadCount": unreadCount})
 
 
-@login_required(login_url="login_admin")
+@login_required(login_url="login_account")
 def my_tickets_detail(request, ticketNumber):
     instance = get_object_or_404(Ticket, ticketNumber=ticketNumber)
     unreadCount = Ticket.objects.filter(isRead=False).count()
@@ -61,7 +65,7 @@ def my_tickets_detail(request, ticketNumber):
     return render(request, "wwttms/tickets/my-ticket-detail.html", {"instance": instance, "unreadCount": unreadCount, "ticketReply": ticketReply})
 
 
-@login_required(login_url="login_admin")
+@login_required(login_url="login_account")
 def add_reply(request, ticketNumber):
     instance = get_object_or_404(Ticket, ticketNumber=ticketNumber)
     if request.method == "POST":
@@ -70,3 +74,11 @@ def add_reply(request, ticketNumber):
         new_comment.ticketId = instance
         new_comment.save()
     return redirect(reverse("my_ticket_detail", kwargs={"ticketNumber": ticketNumber}))
+
+
+@login_required(login_url="login_admin")
+def delete_my_ticket(request, ticketNumber):
+    instance = get_object_or_404(Ticket, ticketNumber=ticketNumber)
+    instance.delete()
+    messages.success(request, "Your ticket was successfully deleted")
+    return redirect("my_tickets")

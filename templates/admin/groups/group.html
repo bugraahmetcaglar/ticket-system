@@ -1,56 +1,39 @@
 {% extends "admin/layout/layout.html" %}
-{% block title %}Blank Page{% endblock %}
+{% block title %}Groups{% endblock %}
 {% load static %}
 {% block body %}
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Gruplar</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{% url 'groups_index' %}">Gruplar</a></li>
-                            <li class="breadcrumb-item active">Liste</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- Main content -->
         <section class="content">
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 mt-5">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Gruplar</h3>
+                            <h3 class="card-title">Groups</h3>
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example2" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <th>Ad</th>
-                                    <th>Oluşturulduğu Tarih</th>
-                                    <th>Son Güncelleme</th>
-                                    <th>Aktiflik</th>
-                                    <th>İşlemler</th>
+                                    <th>Group Id</th>
+                                    <th>Group Name</th>
+                                    <th>Created Date</th>
+                                    <th>Last Update</th>
+                                    <th>Is Active</th>
+                                    <th>Operations</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% if groups %}
                                     {% for group in groups %}
                                         <tr>
+                                            <td>{{ group.id }}</td>
                                             <td>{{ group.title }}</td>
                                             <td>{{ group.createdDate }}</td>
                                             <td>{{ group.updatedDate }}</td>
-                                            <td>{% if group.isActive %}Aktif{% else %}Kapalı{% endif %}</td>
+                                            <td>{{ group.isActive }}</td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'edit_group' group.slug %}"><button class="btn btn-sm btn-success">Düzenle</button></a>
-                                                <a style="color: #fff" href="{% url 'delete_group' group.slug %}"><button class="btn btn-sm btn-danger">Sil</button></a>
+                                                <a style="color: #fff" href="{% url 'edit_group' group.slug %}" type="button" class="btn btn-sm btn-success">Edit</a>
+                                                <a style="color: #fff" href="{% url 'delete_group' group.slug %}" type="button" class="btn btn-sm btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -58,25 +41,20 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <th>Ad</th>
-                                    <th>Oluşturulduğu Tarih</th>
-                                    <th>Son Güncelleme</th>
-                                    <th>Aktiflik</th>
-                                    <th>İşlemler</th>
+                                    <th>Group Id</th>
+                                    <th>Group Name</th>
+                                    <th>Created Date</th>
+                                    <th>Last Update</th>
+                                    <th>Is Active</th>
+                                    <th>Operations</th>
                                 </tr>
                                 </tfoot>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
     {% include 'admin/layout/footer.html' %}
 {% endblock %}

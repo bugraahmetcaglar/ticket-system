@@ -3,8 +3,8 @@ from account.models import Permission, Group, GroupPermission, AccountGroup, Acc
 
 
 class AdminLoginForm(forms.Form):
-    email = forms.EmailField(label="Email Adresi")
-    password = forms.CharField(label="Şifre", widget=forms.PasswordInput())
+    email = forms.EmailField(label="Email")
+    password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
     def clean(self):
         email = self.cleaned_data.get("email")
@@ -18,32 +18,32 @@ class AdminLoginForm(forms.Form):
 
 
 class AdminPermissionForm(forms.Form):
-    title = forms.CharField(max_length=None, label="İzin Adı")
+    title = forms.CharField(max_length=None, label="Permission Name")
     slug = forms.SlugField(max_length=None, label="Slug")
-    isActive = forms.BooleanField(required=False, label="Aktiflik")
+    isActive = forms.BooleanField(required=False, label="Is Active")
 
 
 class AdminGroupPermissionForm(forms.Form):
-    permissionId = forms.ModelChoiceField(queryset=Account.objects.all(), label="İzin Adı")
-    groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Grup Adı")
-    isActive = forms.BooleanField(required=False, label="Aktiflik")
+    permissionId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Permission Name")
+    groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Group Name")
+    isActive = forms.BooleanField(required=False, label="Is Active")
 
 
 class AdminAccountGroupForm(forms.Form):
-    userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Kullanıcı Adı")
-    groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Grup Adı")
+    userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Username")
+    groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Group Name")
     isActive = forms.BooleanField(required=False, label="Aktiflik")
 
 
 class AdminAccountPermissionForm(forms.Form):
-    userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Kullanıcı Adı")
-    permissionId = forms.ModelChoiceField(queryset=Permission.objects.all(), label="İzin Adı")
-    isActive = forms.BooleanField(required=False, label="Aktiflik")
+    userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Username")
+    permissionId = forms.ModelChoiceField(queryset=Permission.objects.all(), label="Permission Name")
+    isActive = forms.BooleanField(required=False, label="Is Active")
 
 
 class AdminAddGroupForm(forms.Form):
-    title = forms.CharField(required=True, label="Başlık")
-    isActive = forms.BooleanField(required=False, label="Aktiflik")
+    title = forms.CharField(required=True, label="Title")
+    isActive = forms.BooleanField(required=False, label="Is Active")
 
 
 class AdminEditGroupForm(forms.ModelForm):

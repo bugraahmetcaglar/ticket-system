@@ -20,8 +20,13 @@
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
-    {% include 'admin/layout/navbar.html' %}
-    {% include 'admin/layout/sidebar.html' %}
+    {% if accountGroup != 'user' %}
+        {% include 'admin/layout/navbar.html' %}
+        {% include 'admin/layout/sidebar.html' %}
+    {% else %}
+        {% include 'wwttms/layout/navbar.html' %}
+        {% include 'wwttms/layout/sidebar.html' %}
+    {% endif %}
     {% block body %}
     {% endblock %}
 </div>
