@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^edit-account/(?P<username>[\w-]+)/$', users.admin_edit_account, name="admin_edit_account"),
     url(r'^block-account/(?P<username>[\w-]+)/$', users.block_account, name="block_account"),
 
-    path('', views.admin_index, name="admin_index"),
+    path('', views.all_tickets, name="all_tickets"),
     path('groups/', groups.groups_index, name="groups_index"),
     path('add-group/', groups.add_group, name="add_group"),
     path('edit-group/<slug:slug>', groups.edit_group, name="edit_group"),
