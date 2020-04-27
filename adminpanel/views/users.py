@@ -1,14 +1,17 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from account.forms import AccountRegisterForm
 from account.models import AccountGroup, Account, Group
 from account.views import current_user_group
-from adminpanel.forms import AdminAccountGroupForm
+from adminpanel.forms import AdminAccountGroupForm, AdminEditAccountGroupForm
 
 
+@login_required(login_url="login_admin")
 def admin_add_account_group(request):
     """
     :param request:
@@ -32,6 +35,27 @@ def admin_add_account_group(request):
     else:
         messages.error(request, "Yetkiniz yok!")
         return redirect("admin_index")
+
+
+@login_required(login_url="login_admin")
+def admin_edit_account(request, username):
+    instance = get_object_or_404(Account, username=username)
+    context = {
+        "instance": instance,
+    }
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        instance.username = username
+        instance.email = email
+        instance.first_name = first_name
+        instance.last_name = last_name
+        instance.save()
+        messages.success(request, "Kullanıcı adı başarıyla güncellendi.")
+        return render(request, "admin/account/edit-account.html", context)
+    return render(request, "admin/account/edit-account.html", context)
 
 
 @login_required(login_url="login_admin")
@@ -114,3 +138,41 @@ def block_account(request, username):
     except:
         messages.error(request, "User couldn't find")
         return redirect("all_users")
+
+
+@login_required(login_url="login_admin")
+def admin_add_group_to_user(request):
+    """
+    :param request:
+    :return:
+    """
+    userGroup = current_user_group(request, request.user)
+    groups = Group.objects.all()
+    users = Account.objects.all()
+    context = {
+        "userGroup": userGroup,
+        "groups": groups,
+        "users": users,
+    }
+    if userGroup == 'chief' or userGroup == "admin":
+        if request.method == "POST":
+            userId = request.POST['userId']
+            groupId = request.POST['groupId']
+            try:
+                getExistAccount = AccountGroup.objects.get(userId=userId)
+                if getExistAccount:
+                    getExistAccount.groupId_id = groupId
+                    getExistAccount.save()
+                    messages.success(request, "Successfully Changed.")
+                    return redirect("admin_account_groups")
+            except:
+                instance = AccountGroup()
+                instance.groupId_id = groupId
+                instance.userId_id = userId
+                instance.save()
+                messages.success(request, "Successfully added.")
+                return redirect("admin_index")
+    else:
+        messages.error(request, "You don't have permission.")
+        return redirect("admin_index")
+    return render(request, "admin/account/group/add-group-to-user.html", context)

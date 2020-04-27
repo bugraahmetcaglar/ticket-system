@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from account.forms import AccountRegisterForm, AccountLoginForm
 from account.models import Account, AccountGroup, Group
@@ -49,10 +49,11 @@ def login_account(request):
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
             getUser = Account.objects.get(email=email)
-            if getUser:
+
+            if getUser and getUser.is_active:
                 user = authenticate(username=getUser.username, password=password)
             else:
-                messages.error(request, "User not found by given email")
+                messages.error(request, "User not found by given email or the user was blocked")
                 return render(request, "wwttms/login.html", {"form": form})
             if user is None:
                 messages.error(request, "User not found.")
@@ -77,9 +78,9 @@ def logout_account(request):
         return redirect("login_account")
 
 
-def current_user_group(self, username):
+def current_user_group(self, email):
     try:
-        group = AccountGroup.objects.get(userId__username=username)
+        group = AccountGroup.objects.get(userId__email=email)
         return str(group.groupId)
     except:
         group = None

@@ -50,3 +50,9 @@ class AdminEditGroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['title', 'isActive']
+
+
+class AdminEditAccountGroupForm(forms.ModelForm):
+    class Meta:
+        model = AccountGroup
+        fields = ['userId', 'groupId']
