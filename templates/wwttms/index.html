@@ -1,6 +1,7 @@
 {% extends "wwttms/layout/layout.html" %}
 {% block title %}Create a Ticket{% endblock %}
 {% load crispy_forms_tags %}
+{% load crispy_forms_field %}
 {% load static %}
 {% block body %}
     <div class="content-wrapper">
@@ -13,11 +14,27 @@
                                 <div class="card-header">
                                     <h3 class="card-title">Create Ticket</h3>
                                 </div>
-                                <form role="form" class="form-group" method="post">
+                                <form role="form" class="form-group" method="post" action="{% url 'wwttms_index' %}">
                                     {% csrf_token %}
-                                    {{ form.crispy }}
-                                    <div class="container">
-                                        {% crispy form %}
+                                    <div class="form-group">
+                                        <label for="first_name">First Name*</label>
+                                        <input type="text" id="first_name" class="form-control" name="first_name" required
+                                               placeholder="First Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name">Last Name*</label>
+                                        <input type="text" id="last_name" class="form-control" name="last_name" required
+                                               placeholder="Last Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Last Name*</label>
+                                        <input type="email" id="email" class="form-control" name="email" required
+                                               placeholder="Email">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="custom-control">
+                                            {{ form.message }}
+                                        </div>
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary">Submit</button>

@@ -19,13 +19,14 @@ def wwttms_index(request):
     :return:
     """
     form = TicketForm(request.POST or None)
-    if form.is_valid():
-        first_name = form.cleaned_data.get("first_name")
-        last_name = form.cleaned_data.get("last_name")
-        email = form.cleaned_data.get("email")
-        message = form.cleaned_data.get("message")
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        email = request.POST.get("email")
         matchedEmail = Account.objects.filter(email=email)
         if matchedEmail:
+            if form.is_valid():
+                message = request.POST.get("message")
             instance = Ticket(first_name=first_name, last_name=last_name, email=email, message=message)
             instance.creator = request.user
             instance.isTicket = True
@@ -41,7 +42,7 @@ def wwttms_index(request):
             instance.isReply = False
             instance.save()
             messages.success(request, "The ticket was successfully send. We will return as soon as possible")
-            return redirect("wwttms_index")
+            return render(request, "wwttms/index.html", {"form": form})
         else:
             messages.error(request, "The email is not matched in our system")
             return render(request, "wwttms/index.html", {"form": form})
@@ -73,7 +74,7 @@ def add_reply(request, ticketNumber):
         new_comment = TicketReply(content=content, creator=request.user)
         new_comment.ticketId = instance
         new_comment.save()
-    return redirect(reverse("my_ticket_detail", kwargs={"ticketNumber": ticketNumber}))
+    return redirect(reverse("my_tickets_detail", kwargs={"ticketNumber": ticketNumber}))
 
 
 @login_required(login_url="login_admin")

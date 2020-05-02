@@ -7,5 +7,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="wwttms" uuid="29ca3e51-620c-474e-8944-7b6d3a05f297">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://wwttms.cnsubgh6d703.eu-central-1.rds.amazonaws.com:5432/</jdbc-url>
+    </data-source>
   </component>
 </project>
