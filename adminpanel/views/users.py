@@ -123,21 +123,21 @@ def block_account(request, username):
     accountGroup = current_user_group(request, currentUser)
     try:
         instance = Account.objects.get(username=username)
-        if accountGroup == 'admin':
+        if accountGroup == 'chief':
             if instance.is_active:
                 instance.is_active = False
                 instance.save()
-                return redirect("all_users")
+                return redirect("admin_users")
             else:
                 instance.is_active = True
                 instance.save()
-                return redirect("all_users")
+                return redirect("admin_users")
         else:
             messages.error(request, "You don't have permission")
-            return redirect("all_users")
+            return redirect("admin_users")
     except:
         messages.error(request, "User couldn't find")
-        return redirect("all_users")
+        return redirect("admin_users")
 
 
 @login_required(login_url="login_admin")

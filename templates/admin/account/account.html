@@ -35,7 +35,8 @@
                                             <td>{{ user.last_login }}</td>
                                             <td>
                                                 <a style="color: #fff" type="button" href="{% url 'admin_edit_account' user.username %}" class="btn btn-sm btn-success">Edit</a>
-                                                <a style="color: #fff" type="button" href="{% url 'block_account' user.username %}" class="btn btn-sm btn-warning">Block User</a>
+                                                <a style="color: #fff" type="button" href="{% url 'block_account' user.username %}" class="btn btn-sm btn-warning">
+                                                    {% if user.is_active %}Block User{% else %}Unblock User{% endif %}</a>
                                                 <a style="color: #fff" type="button" href="#" class="btn btn-sm btn-danger">Delete</a>
                                             </td>
                                         </tr>
