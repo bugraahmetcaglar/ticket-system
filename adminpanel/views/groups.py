@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render
 from account.models import Group
 from account.views import current_user_group
 from adminpanel.forms import AdminAddGroupForm, AdminEditGroupForm
+from track.models import Ticket
 
 
 @login_required(login_url="login_account")
@@ -16,11 +17,13 @@ def admin_all_groups(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False).count()
     if accountGroup == "chief":
         groups = Group.objects.all()
         context = {
             "groups": groups,
             "accountGroup": accountGroup,
+            "unreadCount": unreadCount,
         }
         return render(request, "admin/groups/group.html", context)
     else:
@@ -36,9 +39,11 @@ def admin_add_group(request):
     """
     form = AdminAddGroupForm(request.POST or None)
     accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False).count()
     context = {
         "form": form,
         "accountGroup": accountGroup,
+        "unreadCount": unreadCount,
     }
     if accountGroup == "chief":
         if form.is_valid():
@@ -62,6 +67,7 @@ def admin_edit_group(request, slug):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False).count()
     try:
         if accountGroup == "chief":
             instance = Group.objects.get(slug=slug)
@@ -70,6 +76,7 @@ def admin_edit_group(request, slug):
                 "instance": instance,
                 "form": form,
                 "accountGroup": accountGroup,
+                "unreadCount": unreadCount,
             }
             if form.is_valid():
                 instance = form.save(commit=False)
