@@ -17,7 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/myenv" />
       <excludeFolder url="file://$MODULE_DIR$/wvenv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (water-works-trouble-ticket-management ceng396 proje)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

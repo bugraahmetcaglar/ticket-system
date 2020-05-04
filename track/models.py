@@ -10,7 +10,7 @@ from account.models import Account
 
 class Ticket(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    creator = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Oluşturan")
+    creator = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="creator")
     message = RichTextField()
     first_name = models.CharField(verbose_name="Ad", max_length=254)
     last_name = models.CharField(verbose_name="Soyad", max_length=254)
@@ -25,6 +25,7 @@ class Ticket(models.Model):
     isTicket = models.BooleanField(default=True, verbose_name="Ticket mı?")
     isReply = models.BooleanField(default=True, verbose_name="Yanıt mı?")
     parentId = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ana Ticket mı?")
+    owner = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
 
     def __str__(self):
         return self.ticketNumber

@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from account.forms import AccountRegisterForm
 from account.models import AccountGroup, Account, Group
 from account.views import current_user_group
-from adminpanel.forms import AdminAccountGroupForm, AdminEditAccountGroupForm
+from adminpanel.forms import AdminAccountGroupForm
 
 
 @login_required(login_url="login_admin")
@@ -39,27 +39,43 @@ def admin_add_account_group(request):
 
 @login_required(login_url="login_admin")
 def admin_edit_account(request, username):
-    instance = get_object_or_404(Account, username=username)
+    """
+    :param request:
+    :param username:
+    :return:
+    """
+    instance = Account.objects.get(username=username)
+    accountGroup = current_user_group(request, request.user)
     context = {
         "instance": instance,
+        "accountGroup": accountGroup,
     }
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        instance.username = username
-        instance.email = email
-        instance.first_name = first_name
-        instance.last_name = last_name
-        instance.save()
-        messages.success(request, "Kullanıcı adı başarıyla güncellendi.")
+    if accountGroup == "admin":
+        if request.method == "POST":
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            first_name = request.POST.get("first_name")
+            last_name = request.POST.get("last_name")
+            instance.username = username
+            instance.email = email
+            instance.first_name = first_name
+            instance.last_name = last_name
+            instance.updatedDate = datetime.datetime.now()
+            instance.save()
+            messages.success(request, "Kullanıcı adı başarıyla güncellendi.")
+            return render(request, "admin/account/edit-account.html", context)
         return render(request, "admin/account/edit-account.html", context)
-    return render(request, "admin/account/edit-account.html", context)
+    else:
+        messages.error(request, "You don't have permission")
+        return redirect("admin_index")
 
 
 @login_required(login_url="login_admin")
 def admin_users(request):
+    """
+    :param request:
+    :return:
+    """
     currentUser = request.user
     accountGroup = current_user_group(request, currentUser)
     users = Account.objects.all()
@@ -72,6 +88,10 @@ def admin_users(request):
 
 @login_required(login_url="login_admin")
 def admin_account_groups(request):
+    """
+    :param request:
+    :return:
+    """
     currentUser = request.user
     accountGroup = current_user_group(request, currentUser)
     groups = AccountGroup.objects.all()
@@ -118,7 +138,7 @@ def admin_add_account(request):
 
 
 @login_required(login_url="login_admin")
-def block_account(request, username):
+def admin_block_account(request, username):
     currentUser = request.user
     accountGroup = current_user_group(request, currentUser)
     try:
@@ -146,15 +166,15 @@ def admin_add_group_to_user(request):
     :param request:
     :return:
     """
-    userGroup = current_user_group(request, request.user)
+    accountGroup = current_user_group(request, request.user)
     groups = Group.objects.all()
     users = Account.objects.all()
     context = {
-        "userGroup": userGroup,
+        "userGroup": accountGroup,
         "groups": groups,
         "users": users,
     }
-    if userGroup == 'chief' or userGroup == "admin":
+    if accountGroup == "chief":
         if request.method == "POST":
             userId = request.POST['userId']
             groupId = request.POST['groupId']
@@ -174,5 +194,5 @@ def admin_add_group_to_user(request):
                 return redirect("admin_index")
     else:
         messages.error(request, "You don't have permission.")
-        return redirect("admin_index")
+        return redirect("admin_users")
     return render(request, "admin/account/group/add-group-to-user.html", context)

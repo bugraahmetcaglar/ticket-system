@@ -32,8 +32,8 @@
                                             <td>{{ group.updatedDate }}</td>
                                             <td>{{ group.isActive }}</td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'edit_group' group.slug %}" type="button" class="btn btn-sm btn-success">Edit</a>
-                                                <a style="color: #fff" href="{% url 'delete_group' group.slug %}" type="button" class="btn btn-sm btn-danger">Delete</a>
+                                                <a style="color: #fff" href="{% url 'admin_edit_group' group.slug %}" type="button" class="btn btn-sm btn-success">Edit</a>
+                                                <a style="color: #fff" href="{% url 'admin_delete_group' group.slug %}" type="button" class="btn btn-sm btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     {% endfor %}

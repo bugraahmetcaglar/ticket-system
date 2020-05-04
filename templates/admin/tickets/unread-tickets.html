@@ -38,7 +38,7 @@
                                                 <a style="color: #fff" href="{% url 'admin_ticket_detail' ticket.ticketNumber %}" class="btn btn-sm btn-success">Reply</a>
                                             </td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'delete_ticket' ticket.ticketNumber %}"><button class="btn btn-sm btn-danger">Close Case</button></a>
+                                                <a style="color: #fff" href="{% url 'admin_delete_ticket' ticket.ticketNumber %}"><button class="btn btn-sm btn-danger">Close Case</button></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
