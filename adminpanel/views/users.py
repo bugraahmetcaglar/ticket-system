@@ -9,6 +9,7 @@ from account.forms import AccountRegisterForm
 from account.models import AccountGroup, Account, Group
 from account.views import current_user_group
 from adminpanel.forms import AdminAccountGroupForm
+from track.models import Ticket
 
 
 @login_required(login_url="login_admin")
@@ -18,9 +19,14 @@ def admin_add_account_group(request):
     :return:
     """
     form = AdminAccountGroupForm(request.POST or None)
-    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="chief")
-    context = {"form": form, "adminGroup": adminGroup}
-    if adminGroup:
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+    accountGroup = current_user_group(request, request.user)
+    context = {
+        "form": form,
+        "accountGroup": accountGroup,
+        "unreadCount": unreadCount,
+    }
+    if accountGroup:
         if form.is_valid():
             userId = form.cleaned_data.get("userId")
             groupId = form.cleaned_data.get("groupId")
@@ -33,7 +39,7 @@ def admin_add_account_group(request):
                 return redirect("admin_add_account_group")
         return render(request, "admin/account/add-account-group.html", context)
     else:
-        messages.error(request, "Yetkiniz yok!")
+        messages.error(request, "You don't have permission.")
         return redirect("admin_index")
 
 
@@ -45,12 +51,14 @@ def admin_edit_account(request, username):
     :return:
     """
     instance = Account.objects.get(username=username)
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     accountGroup = current_user_group(request, request.user)
     context = {
         "instance": instance,
         "accountGroup": accountGroup,
+        "unreadCount": unreadCount,
     }
-    if accountGroup == "admin":
+    if accountGroup == "chief":
         if request.method == "POST":
             username = request.POST.get("username")
             email = request.POST.get("email")
@@ -62,7 +70,7 @@ def admin_edit_account(request, username):
             instance.last_name = last_name
             instance.updatedDate = datetime.datetime.now()
             instance.save()
-            messages.success(request, "Kullanıcı adı başarıyla güncellendi.")
+            messages.success(request, "The user was successfully updated.")
             return render(request, "admin/account/edit-account.html", context)
         return render(request, "admin/account/edit-account.html", context)
     else:
@@ -76,12 +84,13 @@ def admin_users(request):
     :param request:
     :return:
     """
-    currentUser = request.user
-    accountGroup = current_user_group(request, currentUser)
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+    accountGroup = current_user_group(request, request.user)
     users = Account.objects.all()
     context = {
         "users": users,
         "accountGroup": accountGroup,
+        "unreadCount": unreadCount,
     }
     return render(request, "admin/account/account.html", context)
 
@@ -92,25 +101,29 @@ def admin_account_groups(request):
     :param request:
     :return:
     """
-    currentUser = request.user
-    accountGroup = current_user_group(request, currentUser)
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+    accountGroup = current_user_group(request, request.user)
     groups = AccountGroup.objects.all()
     context = {
         "groups": groups,
         "accountGroup": accountGroup,
+        "unreadCount": unreadCount,
     }
     return render(request, "admin/account/account-group.html", context)
 
 
 @login_required(login_url="login_admin")
 def admin_add_account(request):
+    """
+    :param request:
+    :return:
+    """
     form = AccountRegisterForm(request.POST or None)
-    currentUser = request.user
-    accountGroup = current_user_group(request, currentUser)
     getGroup = Group.objects.get(slug="user")
     group = AccountGroup()
-    adminGroup = AccountGroup.objects.filter(userId__username=request.user.username, groupId__slug="chief")
-    if adminGroup:
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+    accountGroup = current_user_group(request, request.user)
+    if accountGroup == "chief":
         if form.is_valid():
             username = form.cleaned_data.get("username")
             email = form.cleaned_data.get("email")
@@ -128,8 +141,8 @@ def admin_add_account(request):
             return redirect("admin_users")
         context = {
             "form": form,
-            "adminGroup": adminGroup,
-            "accountGroup": accountGroup
+            "unreadCount": unreadCount,
+            "accountGroup": accountGroup,
         }
         return render(request, "admin/account/new-user.html", context)
     else:
@@ -139,8 +152,12 @@ def admin_add_account(request):
 
 @login_required(login_url="login_admin")
 def admin_block_account(request, username):
-    currentUser = request.user
-    accountGroup = current_user_group(request, currentUser)
+    """
+    :param request:
+    :param username:
+    :return:
+    """
+    accountGroup = current_user_group(request, request.user)
     try:
         instance = Account.objects.get(username=username)
         if accountGroup == 'chief':
@@ -167,12 +184,14 @@ def admin_add_group_to_user(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     groups = Group.objects.all()
     users = Account.objects.all()
     context = {
-        "userGroup": accountGroup,
+        "accountGroup": accountGroup,
         "groups": groups,
         "users": users,
+        "unreadCount": unreadCount,
     }
     if accountGroup == "chief":
         if request.method == "POST":

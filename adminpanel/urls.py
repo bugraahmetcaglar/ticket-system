@@ -13,6 +13,7 @@ urlpatterns = [
     path('ticket/delete/<int:ticketNumber>', views.admin_delete_ticket, name="admin_delete_ticket"),
     path('', views.admin_index, name="admin_index"),
     path('all-tickets/', views.admin_all_tickets, name="admin_all_tickets"),
+    path('add-ticket-to-group/', views.admin_add_ticket_to_group, name="admin_add_ticket_to_group"),
 
     # User
     path('users/group/add/', users.admin_add_account_group, name="admin_add_account_group"),

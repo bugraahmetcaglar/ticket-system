@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from account.forms import AccountLoginForm
-from account.models import AccountGroup, Account
+from account.models import AccountGroup, Account, Group
 from account.views import current_user_group
 from track.models import Ticket, TicketReply
 
@@ -101,8 +101,8 @@ def admin_unread_tickets(request):
     """
     accountGroup = current_user_group(request, request.user)
     if accountGroup == "chief":
-        unreadTickets = Ticket.objects.filter(isRead=False)
-        unreadCount = Ticket.objects.filter(isRead=False).count()
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True)
+        unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
         return render(request, "admin/tickets/unread-tickets.html",
                       {"unreadTickets": unreadTickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     else:
@@ -166,10 +166,41 @@ def admin_delete_ticket(request, ticketNumber):
             instance.isActive = False
             instance.save()
             return redirect("admin_all_tickets")
-        else:
-            instance.isActive = True
-            instance.save()
-            return redirect("admin_all_tickets")
     except:
         messages.error(request, "Ticket can not be found.")
         return redirect("admin_all_tickets")
+
+
+@login_required(login_url="login_admin")
+def admin_add_ticket_to_group(request):
+    """
+    :param request:
+    """
+    accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+    tickets = Ticket.objects.filter(isActive=True)
+    groups = Group.objects.filter(Q(is_active=True, slug__istartswith="chief"))
+    context = {
+        "accountGroup": accountGroup,
+        "groups": groups,
+        "tickets": tickets,
+        "unreadCount": unreadCount,
+    }
+    if accountGroup == "chief":
+        if request.method == "POST":
+            groupId = request.POST['groupId']
+            ticketId = request.POST['ticketId']
+            try:
+                getTicketOwner = Ticket.objects.get(id=ticketId)
+                if getTicketOwner.owner:
+                    getTicketOwner.owner_id = groupId
+                    getTicketOwner.save()
+                    messages.success(request, "Successfully Changed.")
+                    return redirect("admin_account_groups")
+            except:
+                messages.success(request, "The ticket can not be found.")
+                return redirect("admin_index")
+    else:
+        messages.error(request, "You don't have permission.")
+        return redirect("admin_index")
+    return render(request, "admin/groups/ticket/add-ticket-to-group.html", context)

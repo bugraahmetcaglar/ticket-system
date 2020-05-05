@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.urls import reverse
 
-from account.models import Account
+from account.models import Account, Group
 
 
 class Ticket(models.Model):
@@ -25,7 +25,7 @@ class Ticket(models.Model):
     isTicket = models.BooleanField(default=True, verbose_name="Ticket mı?")
     isReply = models.BooleanField(default=True, verbose_name="Yanıt mı?")
     parentId = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ana Ticket mı?")
-    owner = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
+    owner = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
 
     def __str__(self):
         return self.ticketNumber
