@@ -83,14 +83,29 @@ def admin_all_tickets(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
-    if accountGroup == "chief" or accountGroup.startswith("crew"):
+    if accountGroup == "chief":
         tickets = Ticket.objects.all()
         unreadCount = Ticket.objects.filter(isRead=False).count()
         return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
-    else:
-        tickets = Ticket.objects.filter(owner=request.user)
-        unreadCount = Ticket.objects.filter(isRead=False, owner=request.user).count()
-        return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    # else:
+    #     tickets = Ticket.objects.filter(owner=request.user)
+    #     unreadCount = Ticket.objects.filter(isRead=False, owner=request.user).count()
+    #     return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    elif accountGroup == "crew-a":
+        tickets = Ticket.objects.filter(owner="crew-a")
+        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-a").count()
+        return render(request, "admin/tickets/tickets.html",
+                      {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    elif accountGroup == "crew-b":
+        tickets = Ticket.objects.filter(owner="crew-b")
+        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-b").count()
+        return render(request, "admin/tickets/tickets.html",
+                      {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    elif accountGroup == "crew-c":
+        tickets = Ticket.objects.filter(owner="crew-c")
+        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-c").count()
+        return render(request, "admin/tickets/tickets.html",
+                      {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
 
 
 @login_required(login_url="login_admin")
@@ -100,16 +115,31 @@ def admin_unread_tickets(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
-    if accountGroup == "chief" or accountGroup.startswith("crew"):
-        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True)
-        unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
-        return render(request, "admin/tickets/unread-tickets.html",
-                      {"unreadTickets": unreadTickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
-    else:
+    if accountGroup == "crew-a":
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-a").count()
+        context = {
+            "unreadTickets": unreadTickets,
+        }
+        return render(request, "admin/tickets/unread-tickets.html", context)
+    if accountGroup == "crew-b":
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-b").count()
+        context = {
+            "unreadTickets": unreadTickets,
+        }
+        return render(request, "admin/tickets/unread-tickets.html", context)
+    if accountGroup == "crew-c":
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-c").count()
+        context = {
+            "unreadTickets": unreadTickets,
+        }
+        return render(request, "admin/tickets/unread-tickets.html", context)
+    elif accountGroup == "chief":
         unreadTickets = Ticket.objects.filter(isRead=False, owner=request.user)
         unreadCount = Ticket.objects.filter(isRead=False, owner=request.user)
         return render(request, "admin/tickets/unread-tickets.html",
                       {"unreadTickets": unreadTickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    else:
+        return redirect("wwttms_index")
 
 
 @login_required(login_url="login_admin")
@@ -192,11 +222,10 @@ def admin_add_ticket_to_group(request):
             ticketId = request.POST['ticketId']
             try:
                 getTicketOwner = Ticket.objects.get(id=ticketId)
-                if getTicketOwner.owner:
-                    getTicketOwner.owner_id = groupId
-                    getTicketOwner.save()
-                    messages.success(request, "Successfully Changed.")
-                    return redirect("admin_account_groups")
+                getTicketOwner.owner_id = groupId
+                getTicketOwner.save()
+                messages.success(request, "Successfully Changed.")
+                return redirect("admin_account_groups")
             except:
                 messages.success(request, "The ticket can not be found.")
                 return redirect("admin_index")
