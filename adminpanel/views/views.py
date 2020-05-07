@@ -100,7 +100,7 @@ def admin_unread_tickets(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
-    if accountGroup == "chief":
+    if accountGroup == "chief" or accountGroup.startswith("crew"):
         unreadTickets = Ticket.objects.filter(isRead=False, isActive=True)
         unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
         return render(request, "admin/tickets/unread-tickets.html",
