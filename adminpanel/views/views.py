@@ -179,7 +179,7 @@ def admin_add_ticket_to_group(request):
     accountGroup = current_user_group(request, request.user)
     unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     tickets = Ticket.objects.filter(isActive=True)
-    groups = Group.objects.filter(Q(is_active=True, slug__istartswith="chief"))
+    groups = Group.objects.filter(Q(isActive=True, slug__istartswith="crew"))
     context = {
         "accountGroup": accountGroup,
         "groups": groups,
