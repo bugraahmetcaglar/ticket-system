@@ -83,7 +83,7 @@ def admin_all_tickets(request):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
-    if accountGroup == "chief":
+    if accountGroup == "chief" or accountGroup.startswith("crew"):
         tickets = Ticket.objects.all()
         unreadCount = Ticket.objects.filter(isRead=False).count()
         return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
