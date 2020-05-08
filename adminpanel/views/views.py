@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from account.forms import AccountLoginForm
-from account.models import AccountGroup, Account, Group
+from account.models import Account, Group
 from account.views import current_user_group
 from track.models import Ticket, TicketReply
 
@@ -87,25 +87,23 @@ def admin_all_tickets(request):
         tickets = Ticket.objects.all()
         unreadCount = Ticket.objects.filter(isRead=False).count()
         return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
-    # else:
-    #     tickets = Ticket.objects.filter(owner=request.user)
-    #     unreadCount = Ticket.objects.filter(isRead=False, owner=request.user).count()
-    #     return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     elif accountGroup == "crew-a":
-        tickets = Ticket.objects.filter(owner="crew-a")
-        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-a").count()
+        tickets = Ticket.objects.filter(owner__slug="crew-a")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
         return render(request, "admin/tickets/tickets.html",
                       {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     elif accountGroup == "crew-b":
-        tickets = Ticket.objects.filter(owner="crew-b")
-        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-b").count()
+        tickets = Ticket.objects.filter(owner__slug="crew-b")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-b").count()
         return render(request, "admin/tickets/tickets.html",
                       {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     elif accountGroup == "crew-c":
-        tickets = Ticket.objects.filter(owner="crew-c")
-        unreadCount = Ticket.objects.filter(isRead=False, owner="crew-c").count()
+        tickets = Ticket.objects.filter(owner__slug="crew-c")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-c").count()
         return render(request, "admin/tickets/tickets.html",
                       {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+    else:
+        return redirect("wwttms_index")
 
 
 @login_required(login_url="login_admin")
@@ -116,26 +114,32 @@ def admin_unread_tickets(request):
     """
     accountGroup = current_user_group(request, request.user)
     if accountGroup == "crew-a":
-        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-a").count()
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner__slug="crew-a")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
         context = {
             "unreadTickets": unreadTickets,
+            "unreadCount": unreadCount,
         }
         return render(request, "admin/tickets/unread-tickets.html", context)
     if accountGroup == "crew-b":
-        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-b").count()
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner__slug="crew-b")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-b").count()
         context = {
             "unreadTickets": unreadTickets,
+            "unreadCount": unreadCount,
         }
         return render(request, "admin/tickets/unread-tickets.html", context)
     if accountGroup == "crew-c":
-        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner="crew-c").count()
+        unreadTickets = Ticket.objects.filter(isRead=False, isActive=True, owner__slug="crew-c")
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-c").count()
         context = {
             "unreadTickets": unreadTickets,
+            "unreadCount": unreadCount,
         }
         return render(request, "admin/tickets/unread-tickets.html", context)
     elif accountGroup == "chief":
-        unreadTickets = Ticket.objects.filter(isRead=False, owner=request.user)
-        unreadCount = Ticket.objects.filter(isRead=False, owner=request.user)
+        unreadTickets = Ticket.objects.filter(isRead=False)
+        unreadCount = Ticket.objects.filter(isRead=False).count()
         return render(request, "admin/tickets/unread-tickets.html",
                       {"unreadTickets": unreadTickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     else:
@@ -207,29 +211,30 @@ def admin_add_ticket_to_group(request):
     :param request:
     """
     accountGroup = current_user_group(request, request.user)
-    unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
-    tickets = Ticket.objects.filter(isActive=True)
-    groups = Group.objects.filter(Q(isActive=True, slug__istartswith="crew"))
-    context = {
-        "accountGroup": accountGroup,
-        "groups": groups,
-        "tickets": tickets,
-        "unreadCount": unreadCount,
-    }
     if accountGroup == "chief":
-        if request.method == "POST":
-            groupId = request.POST['groupId']
-            ticketId = request.POST['ticketId']
-            try:
-                getTicketOwner = Ticket.objects.get(id=ticketId)
-                getTicketOwner.owner_id = groupId
-                getTicketOwner.save()
-                messages.success(request, "Successfully Changed.")
-                return redirect("admin_account_groups")
-            except:
-                messages.success(request, "The ticket can not be found.")
-                return redirect("admin_index")
-    else:
-        messages.error(request, "You don't have permission.")
-        return redirect("admin_index")
-    return render(request, "admin/groups/ticket/add-ticket-to-group.html", context)
+        unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
+        tickets = Ticket.objects.filter(isActive=True)
+        groups = Group.objects.filter(Q(isActive=True, slug__istartswith="crew"))
+        context = {
+            "accountGroup": accountGroup,
+            "groups": groups,
+            "tickets": tickets,
+            "unreadCount": unreadCount,
+        }
+        if accountGroup == "chief":
+            if request.method == "POST":
+                groupId = request.POST['groupId']
+                ticketId = request.POST['ticketId']
+                try:
+                    getTicketOwner = Ticket.objects.get(id=ticketId)
+                    getTicketOwner.owner_id = groupId
+                    getTicketOwner.save()
+                    messages.success(request, "Successfully Changed.")
+                    return redirect("admin_account_groups")
+                except:
+                    messages.success(request, "The ticket can not be found.")
+                    return redirect("admin_index")
+        else:
+            messages.error(request, "You don't have permission.")
+            return redirect("admin_index")
+        return render(request, "admin/groups/ticket/add-ticket-to-group.html", context)

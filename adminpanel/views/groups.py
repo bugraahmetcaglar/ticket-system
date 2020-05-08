@@ -18,7 +18,7 @@ def admin_all_groups(request):
     """
     accountGroup = current_user_group(request, request.user)
     unreadCount = Ticket.objects.filter(isRead=False).count()
-    if accountGroup == "chief" or accountGroup.startswith("crew"):
+    if accountGroup == "chief":
         groups = Group.objects.all()
         context = {
             "groups": groups,

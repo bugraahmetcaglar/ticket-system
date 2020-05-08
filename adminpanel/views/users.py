@@ -26,7 +26,7 @@ def admin_add_account_group(request):
         "accountGroup": accountGroup,
         "unreadCount": unreadCount,
     }
-    if accountGroup:
+    if accountGroup == "chief":
         if form.is_valid():
             userId = form.cleaned_data.get("userId")
             groupId = form.cleaned_data.get("groupId")
@@ -86,13 +86,17 @@ def admin_users(request):
     """
     unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     accountGroup = current_user_group(request, request.user)
-    users = Account.objects.all()
-    context = {
-        "users": users,
-        "accountGroup": accountGroup,
-        "unreadCount": unreadCount,
-    }
-    return render(request, "admin/account/account.html", context)
+    if accountGroup == "chief":
+        users = Account.objects.all()
+        context = {
+            "users": users,
+            "accountGroup": accountGroup,
+            "unreadCount": unreadCount,
+        }
+        return render(request, "admin/account/account.html", context)
+    else:
+        messages.error(request, "You don't have permission.")
+        return redirect("admin_index")
 
 
 @login_required(login_url="login_admin")
@@ -103,13 +107,17 @@ def admin_account_groups(request):
     """
     unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     accountGroup = current_user_group(request, request.user)
-    groups = AccountGroup.objects.all()
-    context = {
-        "groups": groups,
-        "accountGroup": accountGroup,
-        "unreadCount": unreadCount,
-    }
-    return render(request, "admin/account/account-group.html", context)
+    if accountGroup == "chief":
+        groups = AccountGroup.objects.all()
+        context = {
+            "groups": groups,
+            "accountGroup": accountGroup,
+            "unreadCount": unreadCount,
+        }
+        return render(request, "admin/account/account-group.html", context)
+    else:
+        messages.error(request, "You don't have permission.")
+        return redirect("admin_index")
 
 
 @login_required(login_url="login_admin")
@@ -185,33 +193,37 @@ def admin_add_group_to_user(request):
     """
     accountGroup = current_user_group(request, request.user)
     unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
-    groups = Group.objects.all()
-    users = Account.objects.all()
-    context = {
-        "accountGroup": accountGroup,
-        "groups": groups,
-        "users": users,
-        "unreadCount": unreadCount,
-    }
     if accountGroup == "chief":
-        if request.method == "POST":
-            userId = request.POST['userId']
-            groupId = request.POST['groupId']
-            try:
-                getExistAccount = AccountGroup.objects.get(userId=userId)
-                if getExistAccount:
-                    getExistAccount.groupId_id = groupId
-                    getExistAccount.save()
-                    messages.success(request, "Successfully Changed.")
-                    return redirect("admin_account_groups")
-            except:
-                instance = AccountGroup()
-                instance.groupId_id = groupId
-                instance.userId_id = userId
-                instance.save()
-                messages.success(request, "Successfully added.")
-                return redirect("admin_index")
+        groups = Group.objects.all()
+        users = Account.objects.all()
+        context = {
+            "accountGroup": accountGroup,
+            "groups": groups,
+            "users": users,
+            "unreadCount": unreadCount,
+        }
+        if accountGroup == "chief":
+            if request.method == "POST":
+                userId = request.POST['userId']
+                groupId = request.POST['groupId']
+                try:
+                    getExistAccount = AccountGroup.objects.get(userId=userId)
+                    if getExistAccount:
+                        getExistAccount.groupId_id = groupId
+                        getExistAccount.save()
+                        messages.success(request, "Successfully Changed.")
+                        return redirect("admin_account_groups")
+                except:
+                    instance = AccountGroup()
+                    instance.groupId_id = groupId
+                    instance.userId_id = userId
+                    instance.save()
+                    messages.success(request, "Successfully added.")
+                    return redirect("admin_index")
+        else:
+            messages.error(request, "You don't have permission.")
+            return redirect("admin_users")
+        return render(request, "admin/account/group/add-group-to-user.html", context)
     else:
         messages.error(request, "You don't have permission.")
-        return redirect("admin_users")
-    return render(request, "admin/account/group/add-group-to-user.html", context)
+        return redirect("admin_index")
