@@ -156,7 +156,12 @@ def admin_ticket_detail(request, ticketNumber):
     accountGroup = current_user_group(request, request.user)
     try:
         instance = Ticket.objects.get(ticketNumber=ticketNumber)
-        unreadCount = Ticket.objects.filter(isRead=False).count()
+        if accountGroup == "crew-a":
+            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
+        if accountGroup == "crew-b":
+            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-b").count()
+        if accountGroup == "crew-c":
+            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-c").count()
         ticketReply = TicketReply.objects.filter(ticketId__ticketNumber=ticketNumber)
         instance.isRead = True
         instance.save()
