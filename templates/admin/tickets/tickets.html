@@ -15,7 +15,8 @@
                                 <thead>
                                 <tr>
                                     <th>Ticket Number</th>
-                                    <th>Full Name</th>
+                                    <th>Ticket Owner Group</th>
+                                    <th>Creator Full Name</th>
                                     <th>Creator Email</th>
                                     <th>Created Date</th>
                                     <th>Updated Date</th>
@@ -28,17 +29,33 @@
                                 {% if tickets %}
                                     {% for ticket in tickets %}
                                         <tr>
-                                            <td><a href="{% url 'admin_ticket_detail' ticket.ticketNumber %}">{{ ticket.ticketNumber }}</a></td>
+                                            <td>
+                                                <a href="{% url 'admin_ticket_detail' ticket.ticketNumber %}">{{ ticket.ticketNumber }}</a>
+                                            </td>
+                                            {% if ticket.owner %}
+                                                <td>
+                                                    {{ ticket.owner.title }}
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    Not Append
+                                                </td>
+                                            {% endif %}
                                             <td>{{ ticket.first_name }} {{ ticket.last_name }}</td>
                                             <td>{{ ticket.creator.email }}</td>
                                             <td>{{ ticket.createdDate }}</td>
                                             <td>{{ ticket.updatedDate }}</td>
                                             <td>{% if ticket.isActive %}Aktif{% else %}Kapalı{% endif %}</td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'admin_ticket_detail' ticket.ticketNumber %}" class="btn btn-sm btn-success">Reply</a>
+                                                <a style="color: #fff"
+                                                   href="{% url 'admin_ticket_detail' ticket.ticketNumber %}"
+                                                   class="btn btn-sm btn-success">Reply</a>
                                             </td>
                                             <td>
-                                                <a style="color: #fff" href="{% url 'admin_delete_ticket' ticket.ticketNumber %}"><button class="btn btn-sm btn-danger">Close Case</button></a>
+                                                <a style="color: #fff"
+                                                   href="{% url 'admin_delete_ticket' ticket.ticketNumber %}">
+                                                    <button class="btn btn-sm btn-danger">Close Case</button>
+                                                </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -47,7 +64,8 @@
                                 <tfoot>
                                 <tr>
                                     <th>Ticket Number</th>
-                                    <th>Full Name</th>
+                                    <th>Ticket Owner Group</th>
+                                    <th>Creator Full Name</th>
                                     <th>Creator Email</th>
                                     <th>Created Date</th>
                                     <th>Updated Date</th>
