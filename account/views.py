@@ -51,7 +51,7 @@ def logout_account(request):
     """
     if request.user.is_authenticated:
         logout(request)
-        messages.success(request, "Logout successful.")
+        messages.success(request, "Logged out is successful.")
         return redirect("login_account")
     else:
         messages.error(request, "You are not logged in")

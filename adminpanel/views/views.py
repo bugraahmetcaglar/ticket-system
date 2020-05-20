@@ -23,7 +23,8 @@ def admin_index(request):
         return redirect("wwttms_index")
     else:
         unreadCount = Ticket.objects.filter(isRead=False).count()
-        return render(request, "admin/tickets/unread-tickets.html", {"unreadCount": unreadCount, "accountGroup": accountGroup})
+        return render(request, "admin/tickets/unread-tickets.html",
+                      {"unreadCount": unreadCount, "accountGroup": accountGroup})
 
 
 def login_admin(request):
@@ -86,7 +87,8 @@ def admin_all_tickets(request):
     if accountGroup == "chief":
         tickets = Ticket.objects.all()
         unreadCount = Ticket.objects.filter(isRead=False).count()
-        return render(request, "admin/tickets/tickets.html", {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
+        return render(request, "admin/tickets/tickets.html",
+                      {"tickets": tickets, "unreadCount": unreadCount, "accountGroup": accountGroup})
     elif accountGroup == "crew-a":
         tickets = Ticket.objects.filter(owner__slug="crew-a")
         unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
@@ -154,22 +156,24 @@ def admin_ticket_detail(request, ticketNumber):
     :return:
     """
     accountGroup = current_user_group(request, request.user)
+    unreadCount = Ticket.objects.filter(isRead=False).count()
     try:
         instance = Ticket.objects.get(ticketNumber=ticketNumber)
-        if accountGroup == "crew-a":
-            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
-        if accountGroup == "crew-b":
-            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-b").count()
-        if accountGroup == "crew-c":
-            unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-c").count()
-        ticketReply = TicketReply.objects.filter(ticketId__ticketNumber=ticketNumber)
-        instance.isRead = True
-        instance.save()
-        return render(request, "admin/tickets/ticket-detail.html",
-                      {"instance": instance, "unreadCount": unreadCount, "ticketReply": ticketReply, "accountGroup": accountGroup})
     except:
         messages.error(request, "Ticket can not be found.")
         return redirect("admin_all_tickets")
+    if accountGroup == "crew-a":
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-a").count()
+    if accountGroup == "crew-b":
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-b").count()
+    if accountGroup == "crew-c":
+        unreadCount = Ticket.objects.filter(isRead=False, owner__slug="crew-c").count()
+    ticketReply = TicketReply.objects.filter(ticketId__ticketNumber=ticketNumber)
+    instance.isRead = True
+    instance.save()
+    return render(request, "admin/tickets/ticket-detail.html",
+                  {"instance": instance, "unreadCount": unreadCount, "ticketReply": ticketReply,
+                   "accountGroup": accountGroup})
 
 
 @login_required(login_url="login_admin")
@@ -186,6 +190,7 @@ def admin_add_reply(request, ticketNumber):
             new_comment = TicketReply(content=content, creator=request.user)
             new_comment.ticketId = instance
             new_comment.save()
+            messages.success(request, "Successfully replied")
         return redirect(reverse("admin_ticket_detail", kwargs={"ticketNumber": ticketNumber}))
     except:
         messages.error(request, "Ticket can not be found.")
@@ -204,6 +209,7 @@ def admin_delete_ticket(request, ticketNumber):
         if instance.isActive:
             instance.isActive = False
             instance.save()
+            messages.success(request, "The ticket was successfully closed")
             return redirect("admin_all_tickets")
     except:
         messages.error(request, "Ticket can not be found.")
@@ -237,7 +243,7 @@ def admin_add_ticket_to_group(request):
                     messages.success(request, "Successfully Changed.")
                     return redirect("admin_account_groups")
                 except:
-                    messages.success(request, "The ticket can not be found.")
+                    messages.success(request, "Ticket can not be found.")
                     return redirect("admin_index")
         else:
             messages.error(request, "You don't have permission.")

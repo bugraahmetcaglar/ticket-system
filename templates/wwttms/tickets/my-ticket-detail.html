@@ -52,6 +52,7 @@
                                             <p>Sent you a message - {{ instance.createdDate }}</p>
                                         </div>
                                         <p>
+                                            Message:
                                             {{ instance.message|safe }}
                                         </p>
                                     </div>
@@ -70,7 +71,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <hr>
+                    <br>
+                    <div class="container">
                         <div class="col-12 col-md-12 col-lg-12 order-2">
                             <form method="post" id="commentform" class="comment-form"
                                   action="{% url 'add_reply' instance.ticketNumber %}">

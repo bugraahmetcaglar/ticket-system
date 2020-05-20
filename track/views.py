@@ -44,6 +44,8 @@ def wwttms_index(request):
             instance.isRead = False
             instance.isReply = False
             instance.save()
+            instance.parentId_id = instance.id
+            instance.save()
             messages.success(request, "The ticket was successfully send. We will return as soon as possible")
             return render(request, "wwttms/index.html", {"form": form, "unreadCount": unreadCount, "accountGroup": accountGroup})
         else:
@@ -95,6 +97,7 @@ def add_reply(request, ticketNumber):
         new_comment = TicketReply(content=content, creator=request.user)
         new_comment.ticketId = instance
         new_comment.save()
+        messages.success(request, "Successfully replied.")
         return redirect(reverse("my_tickets_detail", kwargs={"ticketNumber": ticketNumber}))
     return render(request, "wwttms/tickets/my-ticket-detail.html", context={"instance": instance, "unreadCount": unreadCount, "accountGroup": accountGroup})
 

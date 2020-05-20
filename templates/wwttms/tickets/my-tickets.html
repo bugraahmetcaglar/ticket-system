@@ -35,7 +35,7 @@
                                             <td>{{ ticket.creator.email }}</td>
                                             <td>{{ ticket.createdDate }}</td>
                                             <td>{{ ticket.updatedDate }}</td>
-                                            <td>{% if ticket.isActive %}Aktif{% else %}Kapalı{% endif %}</td>
+                                            <td>{{ ticket.isActive }}</td>
                                             <td>
                                                 <a style="color: #fff" href="{% url 'my_tickets_detail' ticket.ticketNumber %}"><button class="btn btn-sm btn-warning">Show</button></a>
                                             </td>

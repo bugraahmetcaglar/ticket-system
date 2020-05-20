@@ -1,5 +1,5 @@
 {% extends "admin/layout/layout.html" %}
-{% block title %}Blank Page{% endblock %}
+{% block title %}Ticket Detail{% endblock %}
 {% load static %}
 {% block body %}
     <!-- Content Wrapper. Contains page content -->
@@ -14,7 +14,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Blank Page</li>
+                            <li class="breadcrumb-item active">Ticket - {{ instance.ticketNumber }}</li>
                         </ol>
                     </div>
                 </div>
@@ -74,8 +74,8 @@
                                             <a href="#">{{ instance.first_name }} {{ instance.last_name }}</a>
                                             <p>Sent you a message - {{ instance.createdDate }}</p>
                                         </div>
-                                        <!-- /.user-block -->
                                         <p>
+                                            Message:
                                             {{ instance.message|safe }}
                                         </p>
                                     </div>
@@ -96,7 +96,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <hr>
+                    <br>
+                    <div class="container">
                         <div class="col-12 col-md-12 col-lg-12 order-2">
                             <form method="post" id="commentform" class="comment-form"
                                   action="{% url 'admin_add_reply' instance.ticketNumber %}">
@@ -113,9 +115,10 @@
                                     <button type="submit" class="btn btn-primary">
                                         <span>Send</span>
                                     </button>
-                                    <button class="btn btn-danger">
-                                        <a href="#" style="color: #fff">Close Case</a>
-                                    </button>
+                                    <a style="color: #fff"
+                                       href="{% url 'admin_delete_ticket' instance.ticketNumber %}"
+                                        class="btn btn-danger">Close Case
+                                    </a>
                                 </p>
                             </form>
                         </div>
