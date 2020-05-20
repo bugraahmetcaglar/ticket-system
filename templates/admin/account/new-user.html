@@ -1,7 +1,6 @@
 {% extends "admin/layout/layout.html" %}
 {% block title %}Add New User{% endblock %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% block body %}
     <div class="content-wrapper">
         {% if messages %}
@@ -17,35 +16,79 @@
             </div>
         {% endif %}
         <section class="content">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="row">
                     <div class="col-md-12 mt-5">
                         <div class="card card-primary">
                             <form role="form" id="quickForm" method="post">
                                 {% csrf_token %}
-                                {{ form_as.p }}
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        {{ form.username|as_crispy_field }}
+                                <div class="row">
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="text" class="form-control" name="first_name"
+                                               placeholder="First Name"
+                                               value="{% if first_name %}{{ first_name }}{% endif %}">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-user"></span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        {{ form.first_name|as_crispy_field }}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.last_name|as_crispy_field }}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.password|as_crispy_field }}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.confirm_password|as_crispy_field }}
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="text" class="form-control" name="last_name" placeholder="Last Name"
+                                               value="{% if last_name %}{{ last_name }}{% endif %}">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-user"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <button class="btn btn-danger"><a style="color: #fff"
-                                                                      href="{% url 'admin_users' %}">Go Back</a>
-                                    </button>
+                                <div class="row">
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="text" class="form-control" name="username"
+                                               placeholder="Username"
+                                               value="{% if username %}{{ username }}{% endif %}">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-user"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="email" class="form-control" name="email" placeholder="Email"
+                                               value="{% if email %}{{ email }}{% endif %}">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-envelope"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="password" class="form-control" name="password"
+                                               placeholder="Password">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-lock"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3 col-6">
+                                        <input type="password" class="form-control" name="confirm_password"
+                                               placeholder="Password Confirm">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-lock"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 mt-1">
+                                        <button type="submit" class="btn btn-primary btn-block swalDefaultError">Save
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

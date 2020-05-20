@@ -11,7 +11,7 @@ urlpatterns = [
     path('ticket/detail/<int:ticketNumber>', views.admin_ticket_detail, name="admin_ticket_detail"),
     path('reply/<int:ticketNumber>/', views.admin_add_reply, name="admin_add_reply"),
     path('ticket/delete/<int:ticketNumber>', views.admin_delete_ticket, name="admin_delete_ticket"),
-    path('', views.admin_index, name="admin_index"),
+    path('', views.admin_all_tickets, name="admin_index"),
     path('all-tickets/', views.admin_all_tickets, name="admin_all_tickets"),
     path('add-ticket-to-group/', views.admin_add_ticket_to_group, name="admin_add_ticket_to_group"),
 

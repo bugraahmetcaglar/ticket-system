@@ -126,32 +126,53 @@ def admin_add_account(request):
     :param request:
     :return:
     """
-    form = AccountRegisterForm(request.POST or None)
-    getGroup = Group.objects.get(slug="user")
-    group = AccountGroup()
     unreadCount = Ticket.objects.filter(isRead=False, isActive=True).count()
     accountGroup = current_user_group(request, request.user)
+    context = {
+        "unreadCount": unreadCount,
+        "accountGroup": accountGroup,
+    }
     if accountGroup == "chief":
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            email = form.cleaned_data.get("email")
-            first_name = form.cleaned_data.get("first_name")
-            last_name = form.cleaned_data.get("last_name")
-            password = form.cleaned_data.get("password")
-            new_user = Account(username=username, email=email, first_name=first_name, last_name=last_name)
-            new_user.save()
-            new_user.set_password(password)
-            new_user.save()
-            group.userId_id = new_user.id
-            group.groupId_id = getGroup.id
-            group.save()
+        if request.method == "POST":
+            username = request.POST.get("username")
+            email = request.POST.get("username")
+            first_name = request.POST.get("first_name")
+            last_name = request.POST.get("last_name")
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
+            context = {
+                "first_name": first_name,
+                "last_name": last_name,
+                "username": username,
+                "email": email,
+                "unreadCount": unreadCount,
+                "accountGroup": accountGroup,
+            }
+            if password and confirm_password and password != confirm_password:
+                messages.error(request, "Şifreler uyuşmuyor. Lütfen tekrar deneyin.")
+                return render(request, "admin/account/new-user.html", context)
+            elif not username.isalnum():
+                messages.error(request,
+                               "Username must only consist of letters and numbers, spaces or punctuation cannot be used.")
+                return render(request, "admin/account/new-user.html", context)
+            elif Account.objects.filter(email=email):
+                messages.error(request, "This e-mail address is registered")
+                return render(request, "admin/account/new-user.html", context)
+            elif Account.objects.filter(username=username):
+                messages.error(request, "This username address is registered")
+                return render(request, "admin/account/new-user.html", context)
+            else:
+                new_user = Account(first_name=first_name, last_name=last_name, email=email)
+                new_user.username = username.lower()
+                new_user.is_active = True
+                new_user.save()
+                new_user.set_password(password)
+                new_user.save()
+                getGroup = Group.objects.get(slug="user")
+                new_group = AccountGroup(userId=new_user, groupId=getGroup)
+                new_group.save()
             messages.success(request, "Registration successfully created.")
             return redirect("admin_users")
-        context = {
-            "form": form,
-            "unreadCount": unreadCount,
-            "accountGroup": accountGroup,
-        }
         return render(request, "admin/account/new-user.html", context)
     else:
         messages.error(request, "You don't have permission")
