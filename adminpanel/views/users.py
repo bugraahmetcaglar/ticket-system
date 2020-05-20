@@ -149,7 +149,7 @@ def admin_add_account(request):
                 "accountGroup": accountGroup,
             }
             if password and confirm_password and password != confirm_password:
-                messages.error(request, "Şifreler uyuşmuyor. Lütfen tekrar deneyin.")
+                messages.error(request, "Passwords not matched.")
                 return render(request, "admin/account/new-user.html", context)
             elif not username.isalnum():
                 messages.error(request,
