@@ -135,7 +135,7 @@ def admin_add_account(request):
     if accountGroup == "chief":
         if request.method == "POST":
             username = request.POST.get("username")
-            email = request.POST.get("username")
+            email = request.POST.get("email")
             first_name = request.POST.get("first_name")
             last_name = request.POST.get("last_name")
             password = request.POST.get("password")
@@ -193,10 +193,12 @@ def admin_block_account(request, username):
             if instance.is_active:
                 instance.is_active = False
                 instance.save()
+                messages.success(request, "User successfully unactivated.")
                 return redirect("admin_users")
             else:
                 instance.is_active = True
                 instance.save()
+                messages.success(request, "User successfully activated.")
                 return redirect("admin_users")
         else:
             messages.error(request, "You don't have permission")
