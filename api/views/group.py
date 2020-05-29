@@ -27,7 +27,6 @@ class GroupCreateView(CreateAPIView):
         response = {
             'success': 'True',
             'status code': status_code,
-            'message': None,
+            'message': "Successfully created.",
         }
-
         return Response(response, status=status_code)
