@@ -1,4 +1,4 @@
-#!C:\Users\bugraahmetcaglar\Desktop\IdeaProjects\water-works-trouble-ticket-management\wvenv\Scripts\python.exe
+#!c:\users\bugraahmetcaglar\desktop\ideaprojects\ticket-system\wvenv\scripts\python.exe
 
 import sys
 import json

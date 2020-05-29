@@ -24,7 +24,6 @@ class Ticket(models.Model):
     tree = ArrayField(JSONField(default=dict), blank=True, null=True)
     isTicket = models.BooleanField(default=True, verbose_name="Ticket mı?")
     isReply = models.BooleanField(default=True, verbose_name="Yanıt mı?")
-    parentId = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ana Ticket mı?")
     owner = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True, related_name="owner")
 
     def __str__(self):
@@ -43,6 +42,13 @@ class Ticket(models.Model):
     def get_api_url(self):
         return reverse("ticket-api-detail", kwargs={"ticketNumber": self.ticketNumber})
 
+    def children(self):
+        return TicketReply.objects.filter(ticketId=self)
+
+    @property
+    def any_children(self):
+        return TicketReply.objects.filter(ticketId=self.ticketNumber)
+
 
 class TicketReply(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Yorum Id")
@@ -52,6 +58,7 @@ class TicketReply(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     updatedDate = models.DateTimeField(null=True, blank=True, verbose_name="Updated Date")
     like = models.PositiveIntegerField(default=0, verbose_name="Like")
+    parentId = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.creator
@@ -59,3 +66,10 @@ class TicketReply(models.Model):
     class Meta:
         db_table = "TicketReply"
         ordering = ['-createdDate']
+
+    def children(self):
+        return TicketReply.objects.filter(parentId=self)
+
+    @property
+    def any_children(self):
+        return TicketReply.objects.filter(parentId=self).exist()

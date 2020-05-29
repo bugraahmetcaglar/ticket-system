@@ -22,6 +22,7 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls')),
     path('', include('account.urls')),
     path('', include('track.urls')),
+    path('', include('api.urls')),
 ]
 
 if settings.DEBUG:
