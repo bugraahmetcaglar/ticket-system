@@ -1,5 +1,5 @@
 from django import forms
-from account.models import Permission, Group, GroupPermission, AccountGroup, AccountPermission, Account
+from account.models import Group, AccountGroup, Account
 
 
 class AdminLoginForm(forms.Form):
@@ -17,12 +17,6 @@ class AdminLoginForm(forms.Form):
         return values
 
 
-class AdminPermissionForm(forms.Form):
-    title = forms.CharField(max_length=None, label="Permission Name")
-    slug = forms.SlugField(max_length=None, label="Slug")
-    isActive = forms.BooleanField(required=False, label="Is Active")
-
-
 class AdminGroupPermissionForm(forms.Form):
     permissionId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Permission Name")
     groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Group Name")
@@ -33,12 +27,6 @@ class AdminAccountGroupForm(forms.Form):
     userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Username")
     groupId = forms.ModelChoiceField(queryset=Group.objects.all(), label="Group Name")
     isActive = forms.BooleanField(required=False, label="Aktiflik")
-
-
-class AdminAccountPermissionForm(forms.Form):
-    userId = forms.ModelChoiceField(queryset=Account.objects.all(), label="Username")
-    permissionId = forms.ModelChoiceField(queryset=Permission.objects.all(), label="Permission Name")
-    isActive = forms.BooleanField(required=False, label="Is Active")
 
 
 class AdminAddGroupForm(forms.Form):

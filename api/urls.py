@@ -6,7 +6,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
 
 from api.views.account import AccountLoginAPIView, AccountRegistrationView, AccountDetailAPI, AccountUpdateView
-from api.views.group import GroupListAPI
+from api.views.group import GroupListAPI, GroupCreateView
 from api.views.ticket import TicketDetailAPI, TicketListAPI, TicketReplyAPI, TicketDeleteAPI
 
 router = routers.SimpleRouter()
@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^api/v1/Account/Update/$', AccountUpdateView.as_view(), name="account-update-api"),
 
     url(r'^api/v1/Group/List/$', GroupListAPI.as_view(), name="group-list-api"),
+    url(r'^api/v1/Group/Create/$', GroupCreateView.as_view(), name="group-create-api"),
 
     url(r'^api/v1/Ticket/List/$', TicketListAPI.as_view(), name="ticket-list-api"),
     url(r'^api/v1/Ticket/(?P<ticketNumber>[\w-]+)/$', TicketDetailAPI.as_view(), name="ticket-detail-api"),
