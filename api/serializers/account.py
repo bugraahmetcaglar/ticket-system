@@ -11,14 +11,14 @@ JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 # Registration
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ('first_name', 'last_name', 'email', 'date_joined', 'is_active',)
+        fields = ('username', 'first_name', 'last_name', 'email')
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    profile = UserSerializer(required=False)
+    profile = ProfileSerializer(required=False)
 
     class Meta:
         model = Account
@@ -38,7 +38,23 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# Login
+class AccountUpdateSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(required=False)
+
+    class Meta:
+        model = Account
+        fields = ('profile',)
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+        user = Account.objects.update_or_create(**validated_data)
+        Account.objects.update(
+            first_name=profile_data['first_name'],
+            last_name=profile_data['last_name']
+        )
+        return user
+
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -71,3 +87,9 @@ class LoginSerializer(serializers.Serializer):
             'username': user.username,
             'token': jwt_token
         }
+
+
+class UpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ('first_name', 'last_name')

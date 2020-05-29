@@ -1,12 +1,15 @@
+import datetime
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, permissions
-from rest_framework.generics import CreateAPIView, get_object_or_404
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import CreateAPIView, get_object_or_404, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.models import Account
-from api.serializers.account import RegisterSerializer, LoginSerializer
+from api.serializers.account import RegisterSerializer, LoginSerializer, ProfileSerializer, AccountUpdateSerializer, \
+    UpdateSerializer
 
 
 class AccountRegistrationView(CreateAPIView):
@@ -26,6 +29,17 @@ class AccountRegistrationView(CreateAPIView):
         }
 
         return Response(response, status=status_code)
+
+
+class AccountUpdateView(UpdateAPIView):
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        obj = get_object_or_404(Account, username=self.request.user.username)
+        return obj
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class AccountLoginAPIView(CreateAPIView):
@@ -70,3 +84,17 @@ class AccountDetailAPI(APIView):
             }
         }
         return Response(response)
+
+
+# class ProfileView(RetrieveUpdateAPIView):
+#     permission_classes = (IsAuthenticated, )
+#     serializer_class = ProfileSerializer
+#     queryset = Account.objects.all()
+#
+#     def get_object(self):
+#         queryset = self.get_queryset()
+#         obj = get_object_or_404(Account, username=self.request.user.username)
+#         return obj
+#
+#     def perform_update(self, serializer):
+#         serializer.save(user=self.request.user)
